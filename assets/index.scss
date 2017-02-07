@@ -12,7 +12,14 @@ section {
 
   button {
     @include span-columns(1);
-    @include omega(4n);
+  }
+
+  .wide {
+    @include span-columns(2);
+  }
+
+  .x-wide {
+    @include span-columns(3);
   }
 
   input[type="text"] {
