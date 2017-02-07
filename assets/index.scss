@@ -1,0 +1,22 @@
+@import "neat/neat";
+
+body {
+  margin: 0 auto;
+  max-width: 50em;
+  font-family: "Georgia", serif;
+  padding: 4em 1em;
+}
+
+section {
+  @include outer-container;
+
+  button {
+    @include span-columns(1);
+    @include omega(4n);
+  }
+
+  input[type="text"] {
+    @include span-columns(4);
+  }
+}
+
