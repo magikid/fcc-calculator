@@ -1,47 +1,96 @@
-total = 0;
-lastNumber = "";
-lastOperation = "";
+function logIt(message){
+  console.log(JSON.stringify(message));
+}
+
+class calculator {
+  var total, lastNumber, lastOperation;
+
+  calculator(){
+    reset();
+  }
+
+  doOperation(operand, runningTotal, number){
+    if (Number.isNaN(number)){
+      return runningTotal;
+    }
+    switch(operand){
+      case "ADD":
+        return runningTotal + number;
+      case "SUB":
+        return runningTotal - number;
+      case "MULT":
+        return runningTotal * number;
+      case "DIV":
+        return runningTotal / number;
+      default:
+        return runningTotal;
+    }
+  }
+
+  appendSymbol(symbol, str){
+    if(str.match(/x|\+|\/|-/) || str.length == 0){
+      return str
+    } else {
+      return str + symbol;
+    }
+  }
+
+  clearLast(){
+    lastNumber = "";
+  }
+
+  setOutput(value){
+    $("#output").val(value);
+  }
+
+  reset(){
+    total = 0;
+    lastNumber = "";
+    lastOperation = "ADD";
+    setOutput("");
+  }
+}
+
 $(function() {
-  clearOutput();
+  var calc = new calculator();
+
   $("button").on("click", function(){
     currentOutput = $("#output").val();
     buttonValue = $(this).text();
 
     switch(buttonValue){
       case "ac":
-        clearOutput();
-        total = 0;
-        clearLast();
+        calc.reset();
         break;
       case "+":
+        calc.add(total, Number.parseFloat(lastNumber));
+        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
         setOutput(appendSymbol("+", currentOutput));
         lastOperation = "ADD";
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
-        clearLast();
+        calc.clearLast();
         break;
       case "-":
+        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
         setOutput(appendSymbol("-", currentOutput));
         lastOperation = "SUB";
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
-        clearLast();
+        calc.clearLast();
         break;
       case "/":
+        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
         setOutput(appendSymbol("/", currentOutput));
         lastOperation = "DIV";
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
-        clearLast();
+        calc.clearLast();
         break;
       case "x":
+        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
         setOutput(appendSymbol("x", currentOutput));
         lastOperation = "MULT";
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
-        clearLast();
+        calc.clearLast();
         break;
       case "=":
         total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
-        clearLast();
-        clearOutput();
-        setOutput(total);
+        setOutput(String(total));
+        lastNumber = "";
         break;
       default:
         setOutput(currentOutput + buttonValue);
@@ -53,41 +102,3 @@ $(function() {
   })
 });
 
-function doOperation(operand, runningTotal, number){
-  switch(operand){
-    case "ADD":
-      return runningTotal + number;
-    case "SUB":
-      return runningTotal - number;
-    case "MULT":
-      return runningTotal * number;
-    case "DIV":
-      return runningTotal / number;
-    default:
-      return runningTotal;
-   }
-}
-
-function appendSymbol(symbol, str){
-  if(str.match(/x|\+|\/|-/) || str.length == 0){
-    return str
-  } else {
-    return str + symbol;
-  }
-}
-
-function clearLast(){
-  lastNumber = "";
-}
-
-function setOutput(value){
-  $("#output").val(value);
-}
-
-function clearOutput(){
-  setOutput("");
-}
-
-function logIt(message){
-  console.log(JSON.stringify(message));
-}
