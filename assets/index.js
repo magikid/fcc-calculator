@@ -1,7 +1,3 @@
-function logIt(message){
-  console.log(JSON.stringify(message));
-}
-
 class calculator {
 
   constructor(){
@@ -12,27 +8,27 @@ class calculator {
   }
 
   add(){
-    this.doOperation();
+    this.total = this.doOperation();
     this.lastOperation = "ADD";
     this.clearLast();
   }
 
   subtract(){
-    this.doOperation();
+    this.total = this.doOperation();
     this.lastOperation = "SUB";
     this.clearLast();
   }
 
   multiply(){
-    this.doOperation();
+    this.total = this.doOperation();
     this.lastOperation = "MULT";
     this.clearLast();
   }
 
   divide(){
-    this.doOperation();
+    this.total = this.doOperation();
     this.lastOperation = "DIV";
-    clearLast();
+    this.clearLast();
   }
 
   calculate(){
@@ -46,21 +42,25 @@ class calculator {
   }
 
   doOperation(){
-    number = Number.parseFloat(this.lastNumber);
+    var operand = this.lastOperation;
+    var runningTotal = this.total;
+    var number = Number.parseFloat(this.lastNumber);
+
     if (Number.isNaN(number)){
-      return;
+      return runningTotal;
     }
-    switch(this.lastOperation){
+
+    switch(operand){
       case "ADD":
-        this.total = this.total + number;
+        return runningTotal + number;
       case "SUB":
-        this.total =  this.total - number;
+        return runningTotal - number;
       case "MULT":
-        this.total = this.total * number;
+        return runningTotal * number;
       case "DIV":
-        this.total = this.total / number;
+        return runningTotal / number;
       default:
-        this.total = this.total;
+        return runningTotal;
     }
   }
 
@@ -72,6 +72,16 @@ class calculator {
     this.total = 0;
     this.lastNumber = "";
     this.lastOperation = "ADD";
+  }
+
+  logIt(message){
+    console.log(JSON.stringify(message));
+  }
+
+  printCurrentState(){
+    this.logIt("lastNumber: " + this.lastNumber);
+    this.logIt("lastOperation: " + this.lastOperation);
+    this.logIt("total: " + this.total);
   }
 }
 
@@ -127,9 +137,8 @@ $(function() {
         setOutput(currentOutput + buttonValue);
         calc.appendLastNumber(buttonValue);
     }
-    logIt("lastNumber: " + calc.lastNumber);
-    logIt("lastOperation: " + calc.lastOperation);
-    logIt("total: " + calc.total);
+
+    calc.printCurrentState();
   })
 });
 
