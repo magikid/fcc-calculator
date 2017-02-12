@@ -91,7 +91,7 @@ function setOutput(value){
 }
 
 function appendSymbol(symbol, str){
-  if(str.match(/x|\+|\/|-/) || str.length == 0){
+  if(str.length == 0){
     return str
   } else {
     return str + symbol;
