@@ -3,55 +3,95 @@ function logIt(message){
 }
 
 class calculator {
-  var total, lastNumber, lastOperation;
 
-  calculator(){
-    reset();
+  constructor(){
+    this.total = 0;
+    this.lastNumber = "";
+    this.lastOperation = "ADD";
+    this.reset();
   }
 
-  doOperation(operand, runningTotal, number){
+  add(){
+    this.doOperation();
+    this.lastOperation = "ADD";
+    this.clearLast();
+  }
+
+  subtract(){
+    this.doOperation();
+    this.lastOperation = "SUB";
+    this.clearLast();
+  }
+
+  multiply(){
+    this.doOperation();
+    this.lastOperation = "MULT";
+    this.clearLast();
+  }
+
+  divide(){
+    this.doOperation();
+    this.lastOperation = "DIV";
+    clearLast();
+  }
+
+  calculate(){
+    this.total = this.doOperation();
+    this.lastNumber = "";
+    return this.total;
+  }
+
+  appendLastNumber(number){
+    this.lastNumber = this.lastNumber + number;
+  }
+
+  doOperation(){
+    number = Number.parseFloat(this.lastNumber);
     if (Number.isNaN(number)){
-      return runningTotal;
+      return;
     }
-    switch(operand){
+    switch(this.lastOperation){
       case "ADD":
-        return runningTotal + number;
+        this.total = this.total + number;
       case "SUB":
-        return runningTotal - number;
+        this.total =  this.total - number;
       case "MULT":
-        return runningTotal * number;
+        this.total = this.total * number;
       case "DIV":
-        return runningTotal / number;
+        this.total = this.total / number;
       default:
-        return runningTotal;
-    }
-  }
-
-  appendSymbol(symbol, str){
-    if(str.match(/x|\+|\/|-/) || str.length == 0){
-      return str
-    } else {
-      return str + symbol;
+        this.total = this.total;
     }
   }
 
   clearLast(){
-    lastNumber = "";
-  }
-
-  setOutput(value){
-    $("#output").val(value);
+    this.lastNumber = "";
   }
 
   reset(){
-    total = 0;
-    lastNumber = "";
-    lastOperation = "ADD";
-    setOutput("");
+    this.total = 0;
+    this.lastNumber = "";
+    this.lastOperation = "ADD";
   }
 }
 
+
+function setOutput(value){
+  $("#output").val(value);
+}
+
+function appendSymbol(symbol, str){
+  if(str.match(/x|\+|\/|-/) || str.length == 0){
+    return str
+  } else {
+    return str + symbol;
+  }
+}
+
+
+
 $(function() {
+  setOutput("");
   var calc = new calculator();
 
   $("button").on("click", function(){
@@ -61,44 +101,35 @@ $(function() {
     switch(buttonValue){
       case "ac":
         calc.reset();
+        setOutput("");
         break;
       case "+":
-        calc.add(total, Number.parseFloat(lastNumber));
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
+        calc.add();
         setOutput(appendSymbol("+", currentOutput));
-        lastOperation = "ADD";
-        calc.clearLast();
         break;
       case "-":
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
+        calc.subtract();
         setOutput(appendSymbol("-", currentOutput));
-        lastOperation = "SUB";
-        calc.clearLast();
         break;
       case "/":
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
+        calc.divide();
         setOutput(appendSymbol("/", currentOutput));
-        lastOperation = "DIV";
-        calc.clearLast();
         break;
       case "x":
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
+        calc.multiply();
         setOutput(appendSymbol("x", currentOutput));
-        lastOperation = "MULT";
-        calc.clearLast();
         break;
       case "=":
-        total = doOperation(lastOperation, total, Number.parseFloat(lastNumber));
+        total = calc.calculate();
         setOutput(String(total));
-        lastNumber = "";
         break;
       default:
         setOutput(currentOutput + buttonValue);
-        lastNumber = lastNumber + buttonValue;
+        calc.appendLastNumber(buttonValue);
     }
-    logIt("lastNumber: " + lastNumber);
-    logIt("lastOperation: " + lastOperation);
-    logIt("total: " + total);
+    logIt("lastNumber: " + calc.lastNumber);
+    logIt("lastOperation: " + calc.lastOperation);
+    logIt("total: " + calc.total);
   })
 });
 
